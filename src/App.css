@@ -40,3 +40,35 @@
 .read-the-docs {
   color: #888;
 }
+
+.custom-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 20px;
+}
+
+.custom-header {
+  color: #fbc531 !important;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+
+.custom-paragraph {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 10px;
+  margin: 10px;
+  color: #d1d1d1;
+}
+
+.custom-button {
+  margin-top: 20px;
+  font-weight: bold;
+}
