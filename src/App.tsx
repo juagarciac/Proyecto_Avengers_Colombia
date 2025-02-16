@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import { Container, Button } from "fomantic-ui-react";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import "fomantic-ui-css/semantic.min.css";
+import "./App.css";
+import LandingPage from "./LandingPage";
+import CitizenView from "./CitizenView";
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const RoleSelection: React.FC = () => {
+  const navigate = useNavigate();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React + Probando si es rapido 2</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Probando a cambiar texto
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Container className="custom-container">
+      <h2>Selecciona tu rol</h2>
+      <Button color="blue" onClick={() => navigate("/hero")}>Superhéroe</Button>
+      <Button color="green" onClick={() => navigate("/citizen")}>Ciudadano</Button>
+      <Button color="red" onClick={() => navigate("/admin")}>Administrador</Button>
+    </Container>
+  );
+};
 
-export default App
+const HeroView: React.FC = () => (
+  <Container className="custom-container">
+    <h2>Vista de Superhéroe</h2>
+    <p>Aquí puedes ver y aceptar misiones.</p>
+  </Container>
+);
+
+const AdminView: React.FC = () => (
+  <Container className="custom-container">
+    <h2>Vista de Administrador</h2>
+    <p>Aquí puedes gestionar usuarios y misiones.</p>
+  </Container>
+);
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/roles" element={<RoleSelection />} />
+        <Route path="/hero" element={<HeroView />} />
+        <Route path="/citizen" element={<CitizenView />} />
+        <Route path="/admin" element={<AdminView />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
