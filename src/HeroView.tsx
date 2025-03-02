@@ -1,0 +1,165 @@
+import React, { useState } from "react";
+import "./App.css";
+import { Button } from "fomantic-ui-react";
+import { Navigate, useNavigate } from "react-router-dom";
+
+const citizenName = "SuperHeroe";
+
+const heroes = [
+  { id: 1, name: "Iron Man" },
+  { id: 2, name: "Spider-Man" },
+  { id: 3, name: "Thor" },
+];
+
+const activeCases = [
+  {
+    id: 101,
+    title: "Flood in Bogotá",
+    description: "Need rescue support in flooded area.",
+  },
+  {
+    id: 102,
+    title: "Medical Emergency",
+    description: "Injured people need assistance.",
+  },
+  {
+    id: 103,
+    title: "Power Outage",
+    description: "Residents need backup generators.",
+  },
+];
+
+const HeroView: React.FC = () => {
+  const [selectedHero, setSelectedHero] = useState<number | null>(null);
+  const [selectedCase, setSelectedCase] = useState<number | null>(null);
+  const [chatMessages, setChatMessages] = useState<{ [key: number]: string[] }>(
+    {}
+  );
+  const [message, setMessage] = useState("");
+
+  const handleSendMessage = () => {
+    if (selectedHero && message.trim() !== "") {
+      setChatMessages((prev) => ({
+        ...prev,
+        [selectedHero]: [...(prev[selectedHero] || []), message],
+      }));
+      setMessage("");
+    }
+  };
+
+  const navigate = useNavigate();
+
+  return (
+    <div className="custom-container">
+      {/* Header */}
+      <header className="custom-header">
+        <Button
+          style={{ backgroundColor: "#eab902", color: "white" }}
+          size="large"
+          className="custom-button"
+          onClick={() => navigate("/login")}
+        >
+          Crear Heroe
+        </Button>
+        <h1>Welcome, {citizenName}</h1>
+        <Button
+          style={{ backgroundColor: "#eab902", color: "white" }}
+          size="large"
+          className="custom-button"
+          onClick={() => navigate("/login")}
+        >
+          Cerrar Sesión
+        </Button>
+      </header>
+
+      <div className="main-content">
+        {/* Left Panel: Profile */}
+        <div className="left-panel">
+          <h2>PERFIL</h2>
+          <div className="galeria">
+            <img src="/images/imagen1.jpg" alt="Imagen 1" />
+            <img src="/images/imagen2.jpg" alt="Imagen 2" />
+            <img src="/images/imagen3.jpg" alt="Imagen 3" />
+            <img src="/images/imagen4.jpg" alt="Imagen 4" />
+            <img src="/images/imagen5.jpg" alt="Imagen 5" />
+            <img src="/images/imagen6.jpg" alt="Imagen 6" />
+          </div>
+        </div>
+
+        {/* Right Panel: Chat & Cases */}
+        <div className="right-panel">
+          {/* Chat Section */}
+          <div className="chat-section">
+            <select
+              onChange={(e) => setSelectedHero(Number(e.target.value))}
+              value={selectedHero || ""}
+            >
+              <option value="">Select a Hero</option>
+              {heroes.map((hero) => (
+                <option key={hero.id} value={hero.id}>
+                  {hero.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="chat-box">
+              <h4>
+                Chat con{" "}
+                {selectedHero
+                  ? heroes.find((h) => h.id === selectedHero)?.name
+                  : "..."}
+              </h4>
+              <div className="messages">
+                {selectedHero && chatMessages[selectedHero]?.length ? (
+                  chatMessages[selectedHero].map((msg, index) => (
+                    <p key={index} className="message">
+                      {msg}
+                    </p>
+                  ))
+                ) : (
+                  <p className="info">No messages yet.</p>
+                )}
+              </div>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <button className="send-btn" onClick={handleSendMessage}>
+              Send
+            </button>
+          </div>
+
+          {/* Cases Section */}
+          <div className="cases-section">
+            <select
+              onChange={(e) => setSelectedCase(Number(e.target.value))}
+              value={selectedCase || ""}
+            >
+              <option value="">Select a Case</option>
+              {activeCases.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+
+            {selectedCase && (
+              <div className="case-info">
+                <h4>{activeCases.find((c) => c.id === selectedCase)?.title}</h4>
+                <p>
+                  {activeCases.find((c) => c.id === selectedCase)?.description}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HeroView;

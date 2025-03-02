@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Container, Dropdown, List, Segment, Header, Message, Input, Button } from "fomantic-ui-react";
-import "fomantic-ui-css/semantic.min.css";
+import "./App.css";
+import { Button } from "fomantic-ui-react";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const citizenName = "Juan Pérez"; // Replace with dynamic data if needed
+const citizenName = "Ciudadano";
 
 const heroes = [
   { id: 1, name: "Iron Man" },
@@ -11,99 +12,186 @@ const heroes = [
 ];
 
 const activeCases = [
-  { id: 101, title: "Flood in Bogotá", description: "Need rescue support in flooded area." },
-  { id: 102, title: "Medical Emergency", description: "Injured people need assistance." },
-  { id: 103, title: "Power Outage", description: "Residents need backup generators." },
+  {
+    id: 101,
+    title: "Flood in Bogotá",
+    description: "Need rescue support in flooded area.",
+  },
+  {
+    id: 102,
+    title: "Medical Emergency",
+    description: "Injured people need assistance.",
+  },
+  {
+    id: 103,
+    title: "Power Outage",
+    description: "Residents need backup generators.",
+  },
 ];
 
 const CitizenView: React.FC = () => {
   const [selectedHero, setSelectedHero] = useState<number | null>(null);
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
-  const [chatMessages, setChatMessages] = useState<{ [key: number]: string[] }>({});
-  const [message, setMessage] = useState<string>("");
+  const [chatMessages, setChatMessages] = useState<{ [key: number]: string[] }>(
+    {}
+  );
+  const [message, setMessage] = useState("");
 
   const handleSendMessage = () => {
     if (selectedHero && message.trim() !== "") {
-      setChatMessages({
-        ...chatMessages,
-        [selectedHero]: [...(chatMessages[selectedHero] || []), message],
-      });
+      setChatMessages((prev) => ({
+        ...prev,
+        [selectedHero]: [...(prev[selectedHero] || []), message],
+      }));
       setMessage("");
     }
   };
 
+  const navigate = useNavigate();
+
   return (
-    <Container className="citizen-view" style={{ height: "100vh", padding: "20px", display: "flex", flexDirection: "column" }}>
-      
-      {/* Header with Citizen Name */}
-      <Segment textAlign="center" style={{ width: "100%", marginBottom: "10px" }}>
-        <Header as="h2">Welcome, {citizenName}</Header>
-      </Segment>
+    <div className="custom-container">
+      {/* Header */}
+      <header className="custom-header">
+        <Button
+          color="yellow"
+          size="large"
+          className="custom-button"
+          onClick={() => navigate("/login")}
+        >
+          Crear Ciudadano
+        </Button>
+        <h1>Bienvenido {citizenName}</h1>
+        <Button
+          color="yellow"
+          size="large"
+          className="custom-button"
+          onClick={() => navigate("/login")}
+        >
+          Cerrar Sesión
+        </Button>
+      </header>
 
-      {/* Main Content: Split Layout */}
-      <div style={{ display: "flex", flex: 1 }}>
-        
-        {/* Left Panel: List of Active Heroes */}
-        <Segment style={{ width: "25%", overflowY: "auto" }}>
-          <Header as="h3">Active Heroes</Header>
-          <List selection>
-            {heroes.map((hero) => (
-              <List.Item key={hero.id} onClick={() => setSelectedHero(hero.id)}>
-                {hero.name}
-              </List.Item>
-            ))}
-          </List>
-        </Segment>
+      <div className="main-content">
+        {/* Left Panel: Profile */}
+        <div className="left-panel" style={{ padding: "30px" }}>
+          <h2>Héroes Activos</h2>
+          <div className="galeria">
+            <img src="/images/imagen1.jpg" alt="Imagen 1" />
+            <img src="/images/imagen2.jpg" alt="Imagen 2" />
+            <img src="/images/imagen3.jpg" alt="Imagen 3" />
+            <img src="/images/imagen4.jpg" alt="Imagen 4" />
+            <img src="/images/imagen5.jpg" alt="Imagen 5" />
+            <img src="/images/imagen6.jpg" alt="Imagen 6" />
+          </div>
+        </div>
 
-        {/* Right Panel: Chat and Cases Stacked */}
-        <div style={{ width: "75%", display: "flex", flexDirection: "column", marginLeft: "10px" }}>
-          
-          {/* Chat Section (Top Half) */}
-          <Segment style={{ flex: 1 }}>
-            <Dropdown
-              placeholder="Select a Hero"
-              fluid
-              selection
-              options={heroes.map((hero) => ({ key: hero.id, text: hero.name, value: hero.id }))}
-              onChange={(_, { value }) => setSelectedHero(value as number)}
-            />
-            <Segment style={{ height: "100%", overflowY: "auto", marginTop: "10px" }}>
-              <Header as="h4">Chat with {selectedHero ? heroes.find(h => h.id === selectedHero)?.name : "..."}</Header>
-              {selectedHero && chatMessages[selectedHero]?.length ? (
-                chatMessages[selectedHero].map((msg, index) => <Message key={index} content={msg} />)
-              ) : (
-                <Message info content="No messages yet." />
-              )}
-            </Segment>
-            <Input
-              fluid
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              action={<Button onClick={handleSendMessage} color="blue">Send</Button>}
-            />
-          </Segment>
+        {/* Right Panel: Chat & Cases */}
+        <div className="right-panel">
+          {/* Chat Section */}
+          <div className="chat-section">
+            <select
+              onChange={(e) => setSelectedHero(Number(e.target.value))}
+              value={selectedHero || ""}
+            >
+              <option value="">Select a Hero</option>
+              {heroes.map((hero) => (
+                <option key={hero.id} value={hero.id}>
+                  {hero.name}
+                </option>
+              ))}
+            </select>
 
-          {/* Cases Section (Bottom Half) */}
-          <Segment style={{ flex: 1, marginTop: "10px" }}>
-            <Dropdown
-              placeholder="Select a Case"
-              fluid
-              selection
-              options={activeCases.map((c) => ({ key: c.id, text: c.title, value: c.id }))}
-              onChange={(_, { value }) => setSelectedCase(value as number)}
-            />
+            <div className="chat-box">
+              <h4>
+                Chat con{" "}
+                {selectedHero
+                  ? heroes.find((h) => h.id === selectedHero)?.name
+                  : "..."}
+              </h4>
+              <div className="messages">
+                {selectedHero && chatMessages[selectedHero]?.length ? (
+                  chatMessages[selectedHero].map((msg, index) => (
+                    <p key={index} className="message">
+                      {msg}
+                    </p>
+                  ))
+                ) : (
+                  <p className="info">Todavía no hay mensajes.</p>
+                )}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                width: "100%",
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{
+                  flex: "85%",
+                  padding: "10px",
+                  borderRadius: "3px",
+                  backgroundColor: "white",
+                }}
+              />
+              <button
+                className="send-btn"
+                onClick={handleSendMessage}
+                style={{ flex: "15%", padding: "10px", borderRadius: "5px" }}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+
+          {/* Cases Section */}
+          <div
+            className="cases-section"
+            style={{
+              flex: "15%",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <select
+              onChange={(e) => setSelectedCase(Number(e.target.value))}
+              value={selectedCase || ""}
+            >
+              <option value="">Selecciona un caso</option>
+              {activeCases.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+
             {selectedCase && (
-              <Segment>
-                <Header as="h4">{activeCases.find(c => c.id === selectedCase)?.title}</Header>
-                <p>{activeCases.find(c => c.id === selectedCase)?.description}</p>
-              </Segment>
+              <div className="case-box">
+                <h4>{activeCases.find((c) => c.id === selectedCase)?.title}</h4>
+                <p>
+                  {activeCases.find((c) => c.id === selectedCase)?.description}
+                </p>
+              </div>
             )}
-          </Segment>
-
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button style={{ padding: "15px", width: "30%", color: "red" }}>
+                Denunciar Superheroe
+              </button>
+              <button style={{ padding: "10px", width: "70%", color: "green" }}>
+                Caso Resuelto
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
