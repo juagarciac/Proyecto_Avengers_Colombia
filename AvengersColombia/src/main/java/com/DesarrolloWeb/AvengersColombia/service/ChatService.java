@@ -35,7 +35,12 @@ public class ChatService {
             participantes.add(cuenta);
         }
         // Crear un nuevo Chat con la lista de participantes y lista vacía de mensajes
-        Chat chat = new Chat(new ArrayList<>(), participantes);
+        Chat chat = new Chat();
+        chat.setMensajes(new ArrayList<>());
+        // Agregar participantes uno a uno
+        for (Cuenta participante : participantes) {
+            chat.añadirParticipante(participante);
+        }
         return chatRepository.save(chat);
     }
 
@@ -44,8 +49,13 @@ public class ChatService {
         // Lógica para enviar un mensaje en el chat
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat no encontrado"));
-        Mensaje mensaje = new Mensaje(); // Asignar autor, texto y chat
+        Cuenta autor = cuentaRepository.findById(autorId)
+                .orElseThrow(() -> new RuntimeException("Autor no encontrado"));
+
+        // Crear mensaje con autor y texto correctamente
+        Mensaje mensaje = new Mensaje(autor, texto);
         chat.enviarMensaje(mensaje);
+        chatRepository.save(chat); // Guardar el chat con el nuevo mensaje
         return mensaje;
     }
 

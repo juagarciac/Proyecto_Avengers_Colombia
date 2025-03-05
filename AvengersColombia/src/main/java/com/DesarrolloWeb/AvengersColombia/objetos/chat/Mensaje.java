@@ -1,6 +1,8 @@
 package com.DesarrolloWeb.AvengersColombia.objetos.chat;
 
 import com.DesarrolloWeb.AvengersColombia.objetos.sujetos.Cuenta;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,16 +12,21 @@ public class Mensaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "autor_id")
+    @JsonIgnoreProperties({"password", "notificaciones"}) // Ignorar datos sensibles del autor
     private Cuenta Autor;
-    @Column
+
+    @Column(length = 5000)
     private String texto;
+
     @Column
     private final LocalDateTime fechaCreacion;
 
     @ManyToOne
     @JoinColumn(name = "chat_id")
+    @JsonBackReference
     private Chat chat;
 
     public Mensaje(Cuenta Autor, String texto) {

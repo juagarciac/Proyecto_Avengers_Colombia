@@ -1,5 +1,6 @@
 package com.DesarrolloWeb.AvengersColombia.objetos.aviso;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class PanelAvisos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "panelAvisos", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private List<Aviso> avisos ;
 
     public PanelAvisos() {

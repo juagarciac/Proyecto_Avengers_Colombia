@@ -1,6 +1,8 @@
 package com.DesarrolloWeb.AvengersColombia.objetos.aviso;
 
 import java.time.LocalDateTime;
+import com.DesarrolloWeb.AvengersColombia.objetos.sujetos.Usuario;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,6 +11,9 @@ public class Aviso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
+    @JoinColumn(name = "creador_id")
+    private Usuario creador;
     @Column
     private String titulo;
     @Column(length = 5000)
@@ -26,6 +31,7 @@ public class Aviso {
     private boolean disponible = true; // Valor predeterminado según la imagen
     @ManyToOne
     @JoinColumn(name = "panel_avisos_id")
+    @JsonBackReference
     private PanelAvisos panelAvisos;
 
     public Aviso(String titulo, String descripcion, String categoria, String imagenR, Importancia importancia, PanelAvisos panelAvisos) {
@@ -113,5 +119,13 @@ public class Aviso {
 
     public void setPanelAvisos(PanelAvisos panelAvisos) {
         this.panelAvisos = panelAvisos;
+    }
+
+    public Usuario getCreador() {
+        return creador;
+    }
+
+    public void setCreador(Usuario creador) {
+        this.creador = creador;
     }
 }
